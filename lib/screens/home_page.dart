@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 
@@ -68,36 +69,108 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
 
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: Colors.black, //change your color here
         ),
+
+        title: Text(widget.title),
+        elevation: 0,
+        leading: Padding(
+            padding: const EdgeInsets.only(left: 18),
+          child: IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.menu),
+          ),
+        ),
+        backgroundColor: Colors.white70,
       ),
+
+
+        body: Padding(padding: const EdgeInsets.only(left: 26, right: 26),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+            children:  <Widget>[
+              // Figma: TOP SPOT GROUP
+             Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text('Hello, Ibrahim!',style: TextStyle(fontSize: 30, fontWeight:FontWeight.bold )),
+                  SizedBox(height: 13,),
+                  Text('Have a Nice Day!', style: TextStyle(fontSize: 20),)
+
+                ],
+
+              ),
+
+             const SizedBox(height: 35,),
+              //FIGMA: NAVIGATION BUTTON GROUP
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:  <Widget> [
+                SizedBox(
+                    height:32, //height of button
+                    width:96, //width of button
+                    child:ElevatedButton(onPressed: () {
+                      if (kDebugMode) {
+                        print('Active Button Pressed');
+                      }
+
+                    },
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFEBF3FF),
+                        elevation: 0,
+                      ), child: const Text('Active', style: TextStyle(color: Colors.black,fontSize: 13),),
+                      //parameters of Button class
+                    )
+                ),
+
+                  SizedBox(
+                      height:32, //height of button
+                      width:96, //width of button
+                      child:ElevatedButton(onPressed: () {
+                        if (kDebugMode) {
+                          print('Complete Button Pressed');
+                        }
+
+
+                      },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFEBF3FF),
+                            elevation: 0,
+                        ), child: const Text('Complete', style: TextStyle(color: Colors.black, fontSize: 13),),
+                        //parameters of Button class
+                      )
+                  ),
+
+                  SizedBox(
+                      height:32, //height of button
+                      width:96, //width of button
+                      child:ElevatedButton(onPressed: () {
+                        if (kDebugMode) {
+                          print('Draft Button Pressed');
+                        }
+
+
+                      },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFEBF3FF),
+                            elevation: 0,
+                        ), child: const Text('Draft', style: TextStyle(color: Colors.black,fontSize: 13),),
+
+                        //parameters of Button class
+                      )
+                  )
+
+                ],
+              )
+
+
+            ],
+          )
+        ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
