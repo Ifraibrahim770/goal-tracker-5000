@@ -1,12 +1,12 @@
 # goal_tracker_5000
 
-A new Flutter project.
+Simple Flutter App for Tracking Short Term Goals
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is open source, feel free to contribute!
 
-A few resources to get you started if this is your first Flutter project:
+For individuals who are new to flutter, the following links may help
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
