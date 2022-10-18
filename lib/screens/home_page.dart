@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:goal_tracker_5000/widgets/goal_item.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -47,6 +47,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final List<String> entries = <String>['A', 'B', 'C'];
+  final List<int> colorCodes = <int>[600, 500, 100];
 
   void _incrementCounter() {
     setState(() {
@@ -68,16 +70,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-
       appBar: AppBar(
         iconTheme: const IconThemeData(
           color: Colors.black, //change your color here
         ),
-
         title: Text(widget.title),
         elevation: 0,
         leading: Padding(
-            padding: const EdgeInsets.only(left: 18),
+          padding: const EdgeInsets.only(left: 18),
           child: IconButton(
             onPressed: () {},
             icon: const Icon(Icons.menu),
@@ -86,90 +86,121 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white70,
       ),
 
-
-        body: Padding(padding: const EdgeInsets.only(left: 26, right: 26),
+      body: Padding(
+          padding: const EdgeInsets.only(left: 26, right: 26),
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-            children:  <Widget>[
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
               // Figma: TOP SPOT GROUP
-             Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Text('Hello, Ibrahim!',style: TextStyle(fontSize: 30, fontWeight:FontWeight.bold )),
-                  SizedBox(height: 13,),
-                  Text('Have a Nice Day!', style: TextStyle(fontSize: 20),)
-
+                  Text('Hello, Ibrahim!',
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                  SizedBox(
+                    height: 13,
+                  ),
+                  Text(
+                    'Have a Nice Day!',
+                    style: TextStyle(fontSize: 20),
+                  )
                 ],
-
               ),
 
-             const SizedBox(height: 35,),
+              const SizedBox(
+                height: 35,
+              ),
               //FIGMA: NAVIGATION BUTTON GROUP
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:  <Widget> [
-                SizedBox(
-                    height:32, //height of button
-                    width:96, //width of button
-                    child:ElevatedButton(onPressed: () {
-                      if (kDebugMode) {
-                        print('Active Button Pressed');
-                      }
-
-                    },
-
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFEBF3FF),
-                        elevation: 0,
-                      ), child: const Text('Active', style: TextStyle(color: Colors.black,fontSize: 13),),
-                      //parameters of Button class
-                    )
-                ),
-
+                children: <Widget>[
                   SizedBox(
-                      height:32, //height of button
-                      width:96, //width of button
-                      child:ElevatedButton(onPressed: () {
-                        if (kDebugMode) {
-                          print('Complete Button Pressed');
-                        }
+                      height: 32, //height of button
+                      width: 96, //width of button
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (kDebugMode) {
+                            print('Active Button Pressed');
+                          }
+                        },
 
-
-                      },
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFEBF3FF),
-                            elevation: 0,
-                        ), child: const Text('Complete', style: TextStyle(color: Colors.black, fontSize: 13),),
+                          backgroundColor: const Color(0xFFEBF3FF),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Active',
+                          style: TextStyle(color: Colors.black, fontSize: 13),
+                        ),
                         //parameters of Button class
-                      )
-                  ),
-
+                      )),
                   SizedBox(
-                      height:32, //height of button
-                      width:96, //width of button
-                      child:ElevatedButton(onPressed: () {
-                        if (kDebugMode) {
-                          print('Draft Button Pressed');
-                        }
-
-
-                      },
+                      height: 32, //height of button
+                      width: 96, //width of button
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (kDebugMode) {
+                            print('Complete Button Pressed');
+                          }
+                        },
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFEBF3FF),
-                            elevation: 0,
-                        ), child: const Text('Draft', style: TextStyle(color: Colors.black,fontSize: 13),),
+                          backgroundColor: const Color(0xFFEBF3FF),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Complete',
+                          style: TextStyle(color: Colors.black, fontSize: 13),
+                        ),
+                        //parameters of Button class
+                      )),
+                  SizedBox(
+                      height: 32, //height of button
+                      width: 96, //width of button
+                      child: ElevatedButton(
+                        onPressed: () {
+                          if (kDebugMode) {
+                            print('Draft Button Pressed');
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFEBF3FF),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Draft',
+                          style: TextStyle(color: Colors.black, fontSize: 13),
+                        ),
 
                         //parameters of Button class
-                      )
-                  )
-
+                      ))
                 ],
-              )
+              ),
+              const SizedBox(
+                height: 13,
+              ),
 
+              const Text('Goals',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold)),
 
+              const SizedBox(
+                height: 21,
+              ),
+
+              Expanded(
+                child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: entries.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return const GoalItem();
+                    }),
+              ),
             ],
-          )
-        ),
+          )),
 
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
