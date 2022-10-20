@@ -1,21 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:goal_tracker_5000/model/goal.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+
 class GoalItem extends StatefulWidget {
-  const GoalItem({Key? key}) : super(key: key);
+
+
+
+  const GoalItem({super.key, required this.id, required this.goal});
+  final Goal goal;
+  final String id;
+
 
   @override
   State<GoalItem> createState() => _GoalItemState();
 }
 
 class _GoalItemState extends State<GoalItem> {
+  String? name;
+  String? date;
+  String? primaryColor;
+  String? secondaryColor;
+  String? duration;
+  var inputFormat = DateFormat('MMMM dd, yyyy HH:mm');
+
+
+  @override
+  void initState() {
+    Goal goal = widget.goal;
+    name = goal.name;
+    date = inputFormat.format(goal.creationDate!);
+    primaryColor = widget.goal.primaryColor;
+    secondaryColor = widget.goal.secondaryColor;
+    duration = widget.goal.duration;
+
+
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding (
       padding: const EdgeInsets.only(bottom: 15),
       child: Card(
         elevation: 0,
-        color: const Color(0xFFFFD3E2),
+        color: Color(int.parse('0xFF${primaryColor!}')),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0),
         ),
@@ -30,16 +61,16 @@ class _GoalItemState extends State<GoalItem> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                    padding: EdgeInsets.only(left: 27, top: 13),
-                    child: Text('October 12th, 2020',
-                        style: TextStyle(color: Colors.black, fontSize: 13))),
+                 Padding(
+                    padding: const EdgeInsets.only(left: 27, top: 13),
+                    child: Text('$date',
+                        style: const TextStyle(color: Colors.black, fontSize: 13))),
                 Container(
                   alignment: Alignment.center,
-                  child: const Padding(
-                      padding: EdgeInsets.only(top: 25),
-                      child: Text('Eat Balanced Diet (60 Days)',
-                          style: TextStyle(
+                  child:  Padding(
+                      padding: const EdgeInsets.only(top: 25),
+                      child: Text('$name ($duration Days)',
+                          style: const TextStyle(
                               fontSize: 15, fontWeight: FontWeight.bold))),
                 ),
                 const Padding(
@@ -61,7 +92,7 @@ class _GoalItemState extends State<GoalItem> {
                         percent: 0.8,
                         barRadius: const Radius.circular(20),
                         linearStrokeCap: LinearStrokeCap.roundAll,
-                        progressColor: const Color(0xFFFF72AD),
+                        progressColor: Color(int.parse('0xFF${secondaryColor!}')),
                         backgroundColor: Colors.white,
                       )),
                 ),
