@@ -6,6 +6,8 @@ import 'package:goal_tracker_5000/model/goal.dart';
 import 'package:goal_tracker_5000/utilities/goal_actions.dart';
 import 'package:goal_tracker_5000/widgets/goal_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:goal_tracker_5000/widgets/menus.dart';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -34,17 +36,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[600, 500, 100];
   final goalNameController = TextEditingController();
   final goalDurationController = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   Map<String, dynamic> goals = {};
+  Offset _tapPosition = Offset.zero;
+  void _getTapPosition(TapDownDetails details) {
+    final RenderBox referenceBox = context.findRenderObject() as RenderBox;
+    setState(() {
+      _tapPosition = referenceBox.globalToLocal(details.globalPosition);
+    });
+  }
+
+  //Context Menu
+
 
   @override
   void initState() {
     getGoals().then((value){
-      goals = value;
+      setState(() {
+        goals = value;
+      });
     });
     super.initState();
   }
@@ -105,9 +117,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             TextButton(
               child: const Text('Cancel'),
-              onPressed: () async {
-                final sharedGoal =  await SharedPreferences.getInstance();
-                sharedGoal.clear();
+              onPressed: () {
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -118,12 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -250,9 +256,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: goals.length,
-                    itemBuilder: (BuildContext context, int index) {
+                    itemBuilder: (BuildContext ctx, int index) {
                       String key = goals.keys.elementAt(index);
-                      return GoalItem(id: key, goal: goals[key],);
+                      return GestureDetector(
+
+                        onTapDown: (details) => _getTapPosition(details),
+                        onLongPress: () {
+                          showContextMenu(ctx,key);
+                        },
+                        child: GoalItem(key: ObjectKey(key), id: key, goal: goals[key],),
+                      );
                     }),
               ),
             ],
@@ -292,5 +305,40 @@ class _MyHomePageState extends State<MyHomePage> {
       prefsMap[key] = goal;
     }
     return prefsMap;
+  }
+
+
+  //Context Menu
+  showContextMenu(BuildContext context, String id) async {
+    final RenderObject? overlay =
+    Overlay.of(context)?.context.findRenderObject();
+
+    final result = await showMenu(
+        context: context,
+
+        // Show the context menu at the tap location
+        position: RelativeRect.fromRect(
+            Rect.fromLTWH(_tapPosition.dx, _tapPosition.dy, 30, 30),
+            Rect.fromLTWH(0, 0, overlay!.paintBounds.size.width,
+                overlay.paintBounds.size.height)),
+
+        // set a list of choices for the context menu
+        items: [
+          const PopupMenuItem(
+            value: 'delete',
+            child: Text('Delete'),
+          ),
+        ]);
+
+    // Implement the logic for each choice here
+    switch (result) {
+      case 'delete':
+        var sharedGoal = await SharedPreferences.getInstance();
+        bool deleted =await sharedGoal.remove(id);
+        goals.removeWhere((key, value) => key == id);
+        setState(() {
+        });
+        break;
+    }
   }
 }

@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:goal_tracker_5000/model/goal.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class GoalItem extends StatefulWidget {
-
-
-
   const GoalItem({super.key, required this.id, required this.goal});
   final Goal goal;
   final String id;
-
 
   @override
   State<GoalItem> createState() => _GoalItemState();
@@ -23,26 +19,26 @@ class _GoalItemState extends State<GoalItem> {
   String? primaryColor;
   String? secondaryColor;
   String? duration;
+  late Goal goal;
   var inputFormat = DateFormat('MMMM dd, yyyy HH:mm');
-
+  late double percentage;
 
   @override
   void initState() {
-    Goal goal = widget.goal;
+    goal = widget.goal;
     name = goal.name;
     date = inputFormat.format(goal.creationDate!);
     primaryColor = widget.goal.primaryColor;
     secondaryColor = widget.goal.secondaryColor;
     duration = widget.goal.duration;
-
-
+    percentage = getPercentage(goal.progress!);
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding (
+    return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: Card(
         elevation: 0,
@@ -61,13 +57,20 @@ class _GoalItemState extends State<GoalItem> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Padding(
-                    padding: const EdgeInsets.only(left: 27, top: 13),
-                    child: Text('$date',
-                        style: const TextStyle(color: Colors.black, fontSize: 13))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                        padding: const EdgeInsets.only(left: 27, top: 13),
+                        child: Text('$date',
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 13))),
+
+                  ],
+                ),
                 Container(
                   alignment: Alignment.center,
-                  child:  Padding(
+                  child: Padding(
                       padding: const EdgeInsets.only(top: 25),
                       child: Text('$name ($duration Days)',
                           style: const TextStyle(
@@ -89,19 +92,20 @@ class _GoalItemState extends State<GoalItem> {
                         animation: true,
                         lineHeight: 11.0,
                         animationDuration: 2500,
-                        percent: 0.8,
+                        percent: percentage,
                         barRadius: const Radius.circular(20),
                         linearStrokeCap: LinearStrokeCap.roundAll,
-                        progressColor: Color(int.parse('0xFF${secondaryColor!}')),
+                        progressColor:
+                            Color(int.parse('0xFF${secondaryColor!}')),
                         backgroundColor: Colors.white,
                       )),
                 ),
                 Container(
                   alignment: Alignment.centerRight,
-                  child: const Padding(
-                      padding: EdgeInsets.only(top: 7, right: 28),
-                      child: Text('70%',
-                          style: TextStyle(
+                  child: Padding(
+                      padding: const EdgeInsets.only(top: 7, right: 28),
+                      child: Text('${percentage.toString()}%',
+                          style: const TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold))),
                 ),
               ],
@@ -110,5 +114,18 @@ class _GoalItemState extends State<GoalItem> {
         ),
       ),
     );
+  }
+
+  double getPercentage(List<dynamic> progressList) {
+    int count = 0;
+    for (var i = 1; i < progressList.length; i++) {
+      Progress progress = Progress.fromJson(progressList[i]);
+      count = progress == null
+          ? count
+          : progress.isDone == true
+              ? count++
+              : count;
+    }
+    return (count / progressList.length * 100);
   }
 }
