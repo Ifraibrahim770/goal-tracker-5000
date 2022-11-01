@@ -23,6 +23,7 @@ class _GoalItemState extends State<GoalItem> {
   var inputFormat = DateFormat('MMMM dd, yyyy HH:mm');
   late double percentage;
 
+
   @override
   void initState() {
     goal = widget.goal;
@@ -48,9 +49,6 @@ class _GoalItemState extends State<GoalItem> {
         ),
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            debugPrint('Card tapped.');
-          },
           child: SizedBox(
             width: 337,
             height: 171,
@@ -91,7 +89,7 @@ class _GoalItemState extends State<GoalItem> {
                         width: MediaQuery.of(context).size.width - 97,
                         animation: true,
                         lineHeight: 11.0,
-                        animationDuration: 2500,
+                        animationDuration: 1000,
                         percent: percentage,
                         barRadius: const Radius.circular(20),
                         linearStrokeCap: LinearStrokeCap.roundAll,
@@ -104,7 +102,7 @@ class _GoalItemState extends State<GoalItem> {
                   alignment: Alignment.centerRight,
                   child: Padding(
                       padding: const EdgeInsets.only(top: 7, right: 28),
-                      child: Text('${percentage.toString()}%',
+                      child: Text('${(percentage * 100).toStringAsFixed(1)}%',
                           style: const TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold))),
                 ),
@@ -118,14 +116,12 @@ class _GoalItemState extends State<GoalItem> {
 
   double getPercentage(List<dynamic> progressList) {
     int count = 0;
-    for (var i = 1; i < progressList.length; i++) {
+    for (var i = 0; i < progressList.length; i++) {
       Progress progress = Progress.fromJson(progressList[i]);
-      count = progress == null
-          ? count
-          : progress.isDone == true
-              ? count++
-              : count;
+      if(progress.isDone == true){
+        count++;
+      }
     }
-    return (count / progressList.length * 100);
+    return (count / progressList.length);
   }
 }

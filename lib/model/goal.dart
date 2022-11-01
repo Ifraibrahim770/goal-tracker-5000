@@ -3,19 +3,21 @@
 class Goal {
   String? name;
   DateTime? creationDate;
+  DateTime? endingDate;
   String? primaryColor;
   String? secondaryColor;
   String? duration;
   bool? isComplete;
-  List<dynamic>? progress;
+  List<dynamic> progress;
 
-  Goal(this.name, this.creationDate, this.duration, this.primaryColor, this.secondaryColor,
+  Goal(this.name, this.creationDate, this.endingDate, this.duration, this.primaryColor, this.secondaryColor,
       this.isComplete, this.progress);
 
   factory Goal.fromJson(Map<String, dynamic> parsedJson) {
     return Goal(
       parsedJson['name'] ?? "",
       parsedJson["creationDate"] == null ? null : DateTime.parse(parsedJson["creationDate"]),
+      parsedJson["endingDate"] == null ? null : DateTime.parse(parsedJson["endingDate"]),
       parsedJson['duration'] ?? "",
       parsedJson['primaryColor'] ?? "",
       parsedJson['secondaryColor'] ?? "",
@@ -29,6 +31,7 @@ class Goal {
     return {
       "name": name,
       "creationDate": creationDate?.toIso8601String(),
+      "endingDate": endingDate?.toIso8601String(),
       "duration": duration,
       "primaryColor": primaryColor,
       "secondaryColor":secondaryColor,

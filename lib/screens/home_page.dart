@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:goal_tracker_5000/model/goal.dart';
+import 'package:goal_tracker_5000/screens/detail_page.dart';
 import 'package:goal_tracker_5000/utilities/goal_actions.dart';
 import 'package:goal_tracker_5000/widgets/goal_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:goal_tracker_5000/widgets/menus.dart';
-
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -27,7 +27,6 @@ class HomePage extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
 
   final String title;
 
@@ -50,17 +49,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Context Menu
 
-
   @override
   void initState() {
-    getGoals().then((value){
+    getGoals().then((value) {
       setState(() {
         goals = value;
       });
     });
     super.initState();
   }
-
 
   Future<void> _showGoalDetailDialog() async {
     goalNameController.clear();
@@ -102,12 +99,13 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: <Widget>[
             TextButton(
               child: const Text('Save'),
-              onPressed: ()  {
+              onPressed: () {
                 //Navigator.of(context).pop();
                 if (_key.currentState!.validate()) {
-                  var result =  saveGoalDetails(goalNameController.text, goalDurationController.text);
+                  var result = saveGoalDetails(
+                      goalNameController.text, goalDurationController.text);
                   Navigator.of(context).pop();
-                  getGoals().then((value){
+                  getGoals().then((value) {
                     setState(() {
                       goals = value;
                     });
@@ -129,7 +127,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(
@@ -259,12 +256,23 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemBuilder: (BuildContext ctx, int index) {
                       String key = goals.keys.elementAt(index);
                       return GestureDetector(
-
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    DetailBody(id: key, goal: goals[key])),
+                          );
+                        },
                         onTapDown: (details) => _getTapPosition(details),
                         onLongPress: () {
-                          showContextMenu(ctx,key);
+                          showContextMenu(ctx, key);
                         },
-                        child: GoalItem(key: ObjectKey(key), id: key, goal: goals[key],),
+                        child: GoalItem(
+                          key: ObjectKey(key),
+                          id: key,
+                          goal: goals[key],
+                        ),
                       );
                     }),
               ),
@@ -298,20 +306,19 @@ class _MyHomePageState extends State<MyHomePage> {
     final sharedGoal = await SharedPreferences.getInstance();
     final keys = sharedGoal.getKeys();
     final prefsMap = <String, Goal>{};
-    for(String key in keys) {
+    for (String key in keys) {
       String? goalJsonString = sharedGoal.getString(key);
-      Map<String,dynamic> goalMap = jsonDecode(goalJsonString!);
+      Map<String, dynamic> goalMap = jsonDecode(goalJsonString!);
       Goal goal = Goal.fromJson(goalMap);
       prefsMap[key] = goal;
     }
     return prefsMap;
   }
 
-
   //Context Menu
   showContextMenu(BuildContext context, String id) async {
     final RenderObject? overlay =
-    Overlay.of(context)?.context.findRenderObject();
+        Overlay.of(context)?.context.findRenderObject();
 
     final result = await showMenu(
         context: context,
@@ -334,10 +341,9 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (result) {
       case 'delete':
         var sharedGoal = await SharedPreferences.getInstance();
-        bool deleted =await sharedGoal.remove(id);
+        bool deleted = await sharedGoal.remove(id);
         goals.removeWhere((key, value) => key == id);
-        setState(() {
-        });
+        setState(() {});
         break;
     }
   }
