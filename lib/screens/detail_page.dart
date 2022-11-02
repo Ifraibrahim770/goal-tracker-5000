@@ -56,7 +56,7 @@ class _DetailBodyState extends State<DetailBody> {
               padding: const EdgeInsets.only(left: 18),
               child: IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(context,true);
                 },
                 icon: const Icon(Icons.arrow_back_ios_new),
               ),

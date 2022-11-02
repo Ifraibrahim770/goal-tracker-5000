@@ -7,7 +7,7 @@ import 'package:goal_tracker_5000/screens/detail_page.dart';
 import 'package:goal_tracker_5000/utilities/goal_actions.dart';
 import 'package:goal_tracker_5000/widgets/goal_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:goal_tracker_5000/widgets/menus.dart';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -51,11 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    getGoals().then((value) {
-      setState(() {
-        goals = value;
-      });
-    });
+    getGoals();
     super.initState();
   }
 
@@ -105,11 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   var result = saveGoalDetails(
                       goalNameController.text, goalDurationController.text);
                   Navigator.of(context).pop();
-                  getGoals().then((value) {
-                    setState(() {
-                      goals = value;
-                    });
-                  });
+                  getGoals();
                 }
               },
             ),
@@ -256,20 +248,24 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemBuilder: (BuildContext ctx, int index) {
                       String key = goals.keys.elementAt(index);
                       return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          bool refresh = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
                                     DetailBody(id: key, goal: goals[key])),
                           );
+
+                          if (refresh == true) {
+                            getGoals();
+                          }
                         },
                         onTapDown: (details) => _getTapPosition(details),
                         onLongPress: () {
                           showContextMenu(ctx, key);
                         },
                         child: GoalItem(
-                          key: ObjectKey(key),
+                          key: UniqueKey(),
                           id: key,
                           goal: goals[key],
                         ),
@@ -302,7 +298,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return null;
   }
 
-  Future<Map<String, Goal>> getGoals() async {
+  Future<void> getGoals() async {
     final sharedGoal = await SharedPreferences.getInstance();
     final keys = sharedGoal.getKeys();
     final prefsMap = <String, Goal>{};
@@ -312,7 +308,9 @@ class _MyHomePageState extends State<MyHomePage> {
       Goal goal = Goal.fromJson(goalMap);
       prefsMap[key] = goal;
     }
-    return prefsMap;
+    setState(() {
+      goals = prefsMap;
+    });
   }
 
   //Context Menu
