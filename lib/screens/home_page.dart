@@ -142,9 +142,9 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               // Figma: TOP SPOT GROUP
-              Column(
+              const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text('Hello, Ibrahim!',
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
@@ -316,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //Context Menu
   showContextMenu(BuildContext context, String id) async {
     final RenderObject? overlay =
-        Overlay.of(context)?.context.findRenderObject();
+        Overlay.of(context).context.findRenderObject();
 
     final result = await showMenu(
         context: context,
